@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>家庭财富 AI Agent V1.2</title>
+
+<style>
+
+body{
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+
+background:#f5f7fb;
+
+padding:20px;
+
+margin:0;
+
+color:#222;
+
+}
+
+.container{
+
+max-width:650px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+margin-bottom:18px;
+
+border-radius:16px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+h1{
+
+text-align:center;
+
+}
+
+h2{
+
+font-size:20px;
+
+}
+
+input{
+
+width:100%;
+
+box-sizing:border-box;
+
+padding:12px;
+
+margin:7px 0;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+background:#2563eb;
+
+color:white;
+
+border:0;
+
+border-radius:10px;
+
+font-size:17px;
+
+margin-top:10px;
+
+}
+
+.result{
+
+line-height:1.8;
+
+font-size:16px;
+
+}
+
+.score{
+
+font-size:28px;
+
+font-weight:bold;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p style="text-align:center">
+
+智能家庭资产管理与财富分析助手 V1.2
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>👨‍👩‍👧 家庭信息</h2>
+
+当前年龄：
+
+<input id="age" type="number" placeholder="例如：58">
+
+计划退休年龄：
+
+<input id="retireAge" type="number" placeholder="例如：65">
+
+</div>
+
+<div class="card">
+
+<h2>💰 家庭现金流</h2>
+
+年收入：
+
+<input id="income" type="number" placeholder="输入年度收入">
+
+年支出：
+
+<input id="expense" type="number" placeholder="输入年度支出">
+
+</div>
+
+<div class="card">
+
+<h2>📊 家庭资产输入</h2>
+
+股票 / ETF：
+
+<input id="stock" type="number">
+
+债券：
+
+<input id="bond" type="number">
+
+现金：
+
+<input id="cash" type="number">
+
+房产：
+
+<input id="house" type="number">
+
+<button onclick="analyze()">
+
+开始 AI 财富分析
+
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>🏦 财富总览</h2>
+
+<div class="result" id="overview">
+
+请输入数据后生成。
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 AI 财富报告</h2>
+
+<div class="result" id="report">
+
+等待分析。
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📈 风险压力测试</h2>
+
+<div class="result" id="risk">
+
+等待分析。
+
+</div>
+<script>
+
+function money(x){
+
+    return "¥" + Math.round(x).toLocaleString();
+
+}
+
+function analyze(){
+
+let age =
+
+Number(document.getElementById("age").value)||0;
+
+let retireAge =
+
+Number(document.getElementById("retireAge").value)||65;
+
+let income =
+
+Number(document.getElementById("income").value)||0;
+
+let expense =
+
+Number(document.getElementById("expense").value)||0;
+
+let stock =
+
+Number(document.getElementById("stock").value)||0;
+
+let bond =
+
+Number(document.getElementById("bond").value)||0;
+
+let cash =
+
+Number(document.getElementById("cash").value)||0;
+
+let house =
+
+Number(document.getElementById("house").value)||0;
+
+let invest = stock + bond;
+
+let total = invest + cash + house;
+
+let saving = income - expense;
+
+let savingRate = 0;
+
+if(income>0){
+
+    savingRate = saving/income*100;
+
+}
+
+document.getElementById("overview").innerHTML=
+
+`
+
+家庭净资产：
+
+<b>${money(total)}</b>
+
+<br><br>
+
+投资资产：
+
+${money(invest)}
+
+<br>
+
+现金储备：
+
+${money(cash)}
+
+<br>
+
+房产：
+
+${money(house)}
+
+<br><br>
+
+年度储蓄：
+
+${money(saving)}
+
+<br>
+
+储蓄率：
+
+${savingRate.toFixed(1)}%
+
+`;
+
+// 财富评分
+
+let score=70;
+
+if(cash/total>0.1){
+
+score+=10;
+
+}
+
+if(invest/total<0.8){
+
+score+=10;
+
+}
+
+if(savingRate>20){
+
+score+=10;
+
+}
+
+if(score>100){
+
+score=100;
+
+}
+
+document.getElementById("report").innerHTML=
+
+`
+
+<div class="score">
+
+${score}/100
+
+</div>
+
+<br>
+
+<b>财富健康分析：</b>
+
+<br><br>
+
+${
+
+savingRate>20
+
+?
+
+"现金流健康，年度储蓄能力较强。"
+
+:
+
+"储蓄率偏低，需要关注收入与支出的平衡。"
+
+}
+
+<br><br>
+
+${
+
+cash/total<0.1
+
+?
+
+"现金比例较低，建议增加应急资金。"
+
+:
+
+"现金储备较合理。"
+
+}
+
+<br><br>
+
+${
+
+stock/invest>0.7
+
+?
+
+"股票资产占比较高，需要关注市场波动。"
+
+:
+
+"投资结构相对稳定。"
+
+}
+
+`;
+
+// 退休预测
+
+let years =
+
+retireAge-age;
+
+if(years<0){
+
+years=0;
+
+}
+
+let futureAssets =
+
+total * Math.pow(1.05,years);
+
+let retirementYears=0;
+
+if(expense>0){
+
+retirementYears =
+
+futureAssets / expense;
+
+}
+
+document.getElementById("report").innerHTML +=
+
+`
+
+<br><br>
+
+<b>退休规划：</b>
+
+<br>
+
+距离退休：
+
+${years} 年
+
+<br>
+
+按5%年化增长估算：
+
+退休资产约：
+
+${money(futureAssets)}
+
+<br>
+
+按照当前支出：
+
+约可支持：
+
+${retirementYears.toFixed(1)} 年
+
+`;
+
+// 风险测试
+
+let loss10 = invest*0.1;
+
+let loss20 = invest*0.2;
+
+let loss30 = invest*0.3;
+
+document.getElementById("risk").innerHTML=
+
+`
+
+市场下跌模拟：
+
+<br><br>
+
+下跌10%：
+
+损失约 ${money(loss10)}
+
+<br>
+
+下跌20%：
+
+损失约 ${money(loss20)}
+
+<br>
+
+下跌30%：
+
+损失约 ${money(loss30)}
+
+<br><br>
+
+建议：
+
+根据风险承受能力调整股票比例。
+
+`;
+
+}
+
+</script>
+
+</body>
+
+</html>
+</div>
