@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>家庭财富 AI Agent V1.9</title>
+
+<style>
+
+body{
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+
+background:#f5f7fb;
+
+padding:20px;
+
+margin:0;
+
+}
+
+.container{
+
+max-width:750px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+margin-bottom:18px;
+
+border-radius:16px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+input,select{
+
+width:100%;
+
+padding:12px;
+
+margin:6px 0;
+
+box-sizing:border-box;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+background:#2563eb;
+
+color:white;
+
+border:0;
+
+border-radius:10px;
+
+font-size:17px;
+
+}
+
+.result{
+
+line-height:1.8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p>
+
+家庭私人 CFO 系统 V1.9
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>👨‍👩‍👧 家庭成员</h2>
+
+<select id="member">
+
+<option>本人</option>
+
+<option>配偶</option>
+
+<option>子女</option>
+
+</select>
+
+</div>
+
+<div class="card">
+
+<h2>📂 资产账户</h2>
+
+账户名称：
+
+<input id="account" placeholder="例如：Chase现金账户">
+
+资产类型：
+
+<select id="type">
+
+<option>现金</option>
+
+<option>美股ETF</option>
+
+<option>中国基金</option>
+
+<option>债券</option>
+
+<option>房产</option>
+
+</select>
+
+金额：
+
+<input id="amount" type="number">
+
+<button onclick="addAsset()">
+
+添加资产
+
+</button>
+
+</div>
+<div class="card">
+
+<h2>📊 家庭资产总览</h2>
+
+<div id="summary" class="result">
+
+暂无资产
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📋 资产明细</h2>
+
+<div id="list" class="result">
+
+暂无记录
+
+</div>
+
+</div>
+
+<script>
+
+let assets=[];
+
+function money(x){
+
+return "¥" + Math.round(x).toLocaleString();
+
+}
+
+// 添加资产
+
+function addAsset(){
+
+let member =
+
+document.getElementById("member").value;
+
+let account =
+
+document.getElementById("account").value;
+
+let type =
+
+document.getElementById("type").value;
+
+let amount =
+
+Number(document.getElementById("amount").value)||0;
+
+if(!account || amount<=0){
+
+alert("请输入账户名称和金额");
+
+return;
+
+}
+
+assets.push({
+
+member,
+
+account,
+
+type,
+
+amount
+
+});
+
+saveData();
+
+showAssets();
+
+}
+
+// 显示资产
+
+function showAssets(){
+
+let total=0;
+
+let html="";
+
+let category={
+
+"现金":0,
+
+"美股ETF":0,
+
+"中国基金":0,
+
+"债券":0,
+
+"房产":0
+
+};
+
+assets.forEach(a=>{
+
+total+=a.amount;
+
+category[a.type]+=a.amount;
+
+html+=`
+
+<br>
+
+👤 ${a.member}
+
+<br>
+
+📂 ${a.account}
+
+<br>
+
+类型：
+
+${a.type}
+
+<br>
+
+金额：
+
+${money(a.amount)}
+
+<br>
+
+----------------
+
+`;
+
+});
+
+document.getElementById("list").innerHTML =
+
+html || "暂无记录";
+
+document.getElementById("summary").innerHTML=
+
+`
+
+<b>家庭净资产：</b>
+
+${money(total)}
+
+<br><br>
+
+现金：
+
+${money(category["现金"])}
+
+<br>
+
+美股ETF：
+
+${money(category["美股ETF"])}
+
+<br>
+
+中国基金：
+
+${money(category["中国基金"])}
+
+<br>
+
+债券：
+
+${money(category["债券"])}
+
+<br>
+
+房产：
+
+${money(category["房产"])}
+
+<br><br>
+
+投资资产：
+
+${money(
+
+category["美股ETF"]+
+
+category["中国基金"]+
+
+category["债券"]
+
+)}
+
+`;
+
+}
+
+// 保存到浏览器
+
+function saveData(){
+
+localStorage.setItem(
+
+"wealthAI_V19",
+
+JSON.stringify(assets)
+
+);
+
+}
+  <div class="card">
+
+<h2>🤖 AI 家庭 CFO 分析</h2>
+
+<button onclick="analyzeWealth()">
+
+生成财富建议
+
+</button>
+
+<div id="aiReport" class="result">
+
+等待分析
+
+</div>
+
+</div>
+
+<script>
+
+function analyzeWealth(){
+
+let total=0;
+
+let stock=0;
+
+let safe=0;
+
+let house=0;
+
+let cash=0;
+
+assets.forEach(a=>{
+
+total+=a.amount;
+
+if(
+
+a.type=="美股ETF" ||
+
+a.type=="中国基金"
+
+){
+
+stock+=a.amount;
+
+}
+
+if(
+
+a.type=="债券" ||
+
+a.type=="现金"
+
+){
+
+safe+=a.amount;
+
+}
+
+if(a.type=="现金"){
+
+cash+=a.amount;
+
+}
+
+if(a.type=="房产"){
+
+house+=a.amount;
+
+}
+
+});
+
+let stockRate =
+
+total>0 ? stock/total*100 : 0;
+
+let safeRate =
+
+total>0 ? safe/total*100 : 0;
+
+let score=70;
+
+if(cash/total>0.1){
+
+score+=10;
+
+}
+
+if(stockRate<70){
+
+score+=10;
+
+}
+
+if(safeRate>20){
+
+score+=10;
+
+}
+
+if(score>100){
+
+score=100;
+
+}
+
+let advice="";
+
+if(stockRate>70){
+
+advice+=
+
+"股票类资产比例较高，建议增加防御型资产；";
+
+}
+
+else{
+
+advice+=
+
+"投资风险结构较合理；";
+
+}
+
+if(cash/total<0.1){
+
+advice+=
+
+"现金储备不足，建议建立应急资金池；";
+
+}
+
+else{
+
+advice+=
+
+"现金流动性良好；";
+
+}
+
+if(house/total>70){
+
+advice+=
+
+"房地产占比偏高，需要关注资产流动性；";
+
+}
+
+document.getElementById("aiReport").innerHTML=
+
+`
+
+<h3>
+
+家庭财富健康评分：
+
+${score}/100
+
+</h3>
+
+<br>
+
+家庭净资产：
+
+${money(total)}
+
+<br><br>
+
+资产结构：
+
+<br>
+
+股票/基金：
+
+${stockRate.toFixed(1)}%
+
+<br>
+
+安全资产：
+
+${safeRate.toFixed(1)}%
+
+<br>
+
+房产：
+
+${(house/total*100||0).toFixed(1)}%
+
+<br><br>
+
+<b>家庭CFO建议：</b>
+
+<br>
+
+${advice}
+
+<br><br>
+
+下一步建议：
+
+<br>
+
+1. 保持资产记录更新
+
+<br>
+
+2. 定期检查资产配置
+
+<br>
+
+3. 根据年龄调整风险水平
+
+`;
+
+}
+
+// 页面打开恢复数据
+
+window.onload=function(){
+
+let saved =
+
+localStorage.getItem("wealthAI_V19");
+
+if(saved){
+
+assets =
+
+JSON.parse(saved);
+
+showAssets();
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
