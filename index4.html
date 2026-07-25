@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>家庭财富 AI Agent V1.3</title>
+
+<style>
+
+body{
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+
+background:#f5f7fb;
+
+padding:20px;
+
+margin:0;
+
+}
+
+.container{
+
+max-width:700px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+margin-bottom:18px;
+
+border-radius:16px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+input{
+
+width:100%;
+
+padding:12px;
+
+margin:6px 0;
+
+box-sizing:border-box;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+border-radius:10px;
+
+font-size:17px;
+
+}
+
+.result{
+
+line-height:1.8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p>
+
+智能家庭资产管理与财富规划助手 V1.3
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>👨‍👩‍👧 家庭成员</h2>
+
+家庭主要成员年龄：
+
+<input id="age" type="number" placeholder="例如58">
+
+配偶年龄：
+
+<input id="spouse" type="number" placeholder="例如55">
+
+</div>
+
+<div class="card">
+
+<h2>💰 收入与支出</h2>
+
+年收入：
+
+<input id="income" type="number">
+
+年支出：
+
+<input id="expense" type="number">
+
+</div>
+
+<div class="card">
+
+<h2>📊 资产输入</h2>
+
+美股 / ETF：
+
+<input id="usstock" type="number">
+
+中国股票 / 基金：
+
+<input id="cnstock" type="number">
+
+债券：
+
+<input id="bond" type="number">
+
+现金：
+
+<input id="cash" type="number">
+
+房产：
+
+<input id="house" type="number">
+
+<button onclick="analyze()">
+
+生成 AI 财富报告
+
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>🏦 财富总览</h2>
+
+<div id="overview" class="result">
+
+等待输入数据
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 AI 财富分析</h2>
+
+<div id="report" class="result">
+
+等待分析
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📉 市场压力测试</h2>
+
+<div id="risk" class="result">
+
+等待分析
+
+</div>
+<script>
+
+function money(x){
+
+    return "¥" + Math.round(x).toLocaleString();
+
+}
+
+function analyze(){
+
+let age =
+
+Number(document.getElementById("age").value)||0;
+
+let spouse =
+
+Number(document.getElementById("spouse").value)||0;
+
+let income =
+
+Number(document.getElementById("income").value)||0;
+
+let expense =
+
+Number(document.getElementById("expense").value)||0;
+
+let usstock =
+
+Number(document.getElementById("usstock").value)||0;
+
+let cnstock =
+
+Number(document.getElementById("cnstock").value)||0;
+
+let bond =
+
+Number(document.getElementById("bond").value)||0;
+
+let cash =
+
+Number(document.getElementById("cash").value)||0;
+
+let house =
+
+Number(document.getElementById("house").value)||0;
+
+// 资产计算
+
+let stock =
+
+usstock + cnstock;
+
+let invest =
+
+stock + bond;
+
+let total =
+
+invest + cash + house;
+
+// 现金流
+
+let saving =
+
+income - expense;
+
+let savingRate = 0;
+
+if(income>0){
+
+savingRate =
+
+saving / income * 100;
+
+}
+
+// 财富总览
+
+document.getElementById("overview").innerHTML =
+
+`
+
+<b>家庭净资产：</b>
+
+${money(total)}
+
+<br><br>
+
+<b>投资资产：</b>
+
+${money(invest)}
+
+<br>
+
+<b>现金储备：</b>
+
+${money(cash)}
+
+<br>
+
+<b>房产：</b>
+
+${money(house)}
+
+<br><br>
+
+<b>投资占比：</b>
+
+${(invest/total*100||0).toFixed(1)}%
+
+<br>
+
+<b>现金占比：</b>
+
+${(cash/total*100||0).toFixed(1)}%
+
+`;
+
+// 财富评分
+
+let score=70;
+
+if(cash/total>0.1){
+
+score+=10;
+
+}
+
+if(invest/total<0.75){
+
+score+=10;
+
+}
+
+if(savingRate>20){
+
+score+=10;
+
+}
+
+if(score>100){
+
+score=100;
+
+}
+
+document.getElementById("report").innerHTML=
+
+`
+
+<h3>财富健康评分：${score}/100</h3>
+
+<b>资产分析：</b>
+
+<br><br>
+
+美国股票/ETF：
+
+${money(usstock)}
+
+<br>
+
+中国股票/基金：
+
+${money(cnstock)}
+
+<br>
+
+债券：
+
+${money(bond)}
+
+<br>
+
+现金：
+
+${money(cash)}
+
+<br>
+
+房产：
+
+${money(house)}
+
+<br><br>
+
+<b>AI建议：</b>
+
+<br>
+
+${
+
+cash/total<0.1
+
+?
+
+"现金比例偏低，建议增加流动资金。"
+
+:
+
+"现金储备较安全。"
+
+}
+
+<br>
+
+${
+
+stock/invest>0.7
+
+?
+
+"股票资产较集中，需要关注市场波动。"
+
+:
+
+"投资组合相对平衡。"
+
+}
+
+<br>
+
+${
+
+savingRate>20
+
+?
+
+"家庭现金流能力较强。"
+
+:
+
+"建议优化收入和支出结构。"
+
+}
+
+`;
+
+// 风险压力测试
+
+let loss10 =
+
+stock*0.1;
+
+let loss20 =
+
+stock*0.2;
+
+let loss30 =
+
+stock*0.3;
+
+document.getElementById("risk").innerHTML=
+
+`
+
+如果股票市场下跌：
+
+<br><br>
+
+📉 下跌10%
+
+资产减少约：
+
+${money(loss10)}
+
+<br><br>
+
+📉 下跌20%
+
+资产减少约：
+
+${money(loss20)}
+
+<br><br>
+
+📉 下跌30%
+
+资产减少约：
+
+${money(loss30)}
+
+<br><br>
+
+模拟结果仅用于风险理解，不代表未来收益。
+
+`;
+
+// 本地保存
+
+let data={
+
+age,
+
+spouse,
+
+income,
+
+expense,
+
+usstock,
+
+cnstock,
+
+bond,
+
+cash,
+
+house
+
+};
+
+localStorage.setItem(
+
+"wealthData",
+
+JSON.stringify(data)
+
+);
+
+}
+
+</script>
+  <script>
+
+// 打开网页时自动读取上次输入数据
+
+window.onload=function(){
+
+let saved =
+
+localStorage.getItem("wealthData");
+
+if(saved){
+
+let data =
+
+JSON.parse(saved);
+
+document.getElementById("age").value =
+
+data.age || "";
+
+document.getElementById("spouse").value =
+
+data.spouse || "";
+
+document.getElementById("income").value =
+
+data.income || "";
+
+document.getElementById("expense").value =
+
+data.expense || "";
+
+document.getElementById("usstock").value =
+
+data.usstock || "";
+
+document.getElementById("cnstock").value =
+
+data.cnstock || "";
+
+document.getElementById("bond").value =
+
+data.bond || "";
+
+document.getElementById("cash").value =
+
+data.cash || "";
+
+document.getElementById("house").value =
+
+data.house || "";
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
+</div>
