@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>家庭财富 AI Agent V1.7</title>
+
+<style>
+
+body{
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+
+background:#f5f7fb;
+
+padding:20px;
+
+margin:0;
+
+}
+
+.container{
+
+max-width:750px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+margin-bottom:18px;
+
+border-radius:16px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+input,textarea{
+
+width:100%;
+
+box-sizing:border-box;
+
+padding:12px;
+
+margin:8px 0;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+border:0;
+
+border-radius:10px;
+
+background:#2563eb;
+
+color:white;
+
+font-size:17px;
+
+margin-top:10px;
+
+}
+
+.result{
+
+line-height:1.8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p>
+
+家庭私人 CFO 财富管理系统 V1.7
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>👤 家庭信息</h2>
+
+当前年龄：
+
+<input id="age" type="number">
+
+退休年龄：
+
+<input id="retire" type="number">
+
+目标退休资产：
+
+<input id="target" type="number">
+
+</div>
+
+<div class="card">
+
+<h2>💰 现金流</h2>
+
+年收入：
+
+<input id="income" type="number">
+
+年支出：
+
+<input id="expense" type="number">
+
+</div>
+
+<div class="card">
+
+<h2>📊 资产</h2>
+
+股票 / ETF：
+
+<input id="stock" type="number">
+
+债券：
+
+<input id="bond" type="number">
+
+现金：
+
+<input id="cash" type="number">
+
+房产：
+
+<input id="house" type="number">
+
+<button onclick="analyze()">
+
+生成财富报告
+
+</button>
+
+</div>
+<div class="card">
+
+<h2>📊 财富分析结果</h2>
+
+<div id="result" class="result">
+
+等待分析
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📄 家庭财富报告</h2>
+
+<div id="report" class="result">
+
+等待生成
+
+</div>
+
+<button onclick="copyReport()">
+
+复制财富报告
+
+</button>
+
+</div>
+
+<script>
+
+function money(x){
+
+return "¥" + Math.round(x).toLocaleString();
+
+}
+
+let reportText="";
+
+function analyze(){
+
+let age =
+
+Number(document.getElementById("age").value)||0;
+
+let retire =
+
+Number(document.getElementById("retire").value)||65;
+
+let target =
+
+Number(document.getElementById("target").value)||0;
+
+let income =
+
+Number(document.getElementById("income").value)||0;
+
+let expense =
+
+Number(document.getElementById("expense").value)||0;
+
+let stock =
+
+Number(document.getElementById("stock").value)||0;
+
+let bond =
+
+Number(document.getElementById("bond").value)||0;
+
+let cash =
+
+Number(document.getElementById("cash").value)||0;
+
+let house =
+
+Number(document.getElementById("house").value)||0;
+
+let invest =
+
+stock+bond;
+
+let total =
+
+invest+cash+house;
+
+let saving =
+
+income-expense;
+
+let rate =
+
+income>0 ? saving/income*100 : 0;
+
+// 未来资产预测
+
+let future5 =
+
+total*Math.pow(1.05,5);
+
+let future10 =
+
+total*Math.pow(1.05,10);
+
+let future20 =
+
+total*Math.pow(1.05,20);
+
+let score=70;
+
+if(cash/total>0.1){
+
+score+=10;
+
+}
+
+if(stock/total<0.7){
+
+score+=10;
+
+}
+
+if(rate>20){
+
+score+=10;
+
+}
+
+if(score>100){
+
+score=100;
+
+}
+
+document.getElementById("result").innerHTML=
+
+`
+
+<b>财富健康评分：</b>
+
+${score}/100
+
+<br><br>
+
+家庭净资产：
+
+${money(total)}
+
+<br>
+
+投资资产：
+
+${money(invest)}
+
+<br>
+
+现金：
+
+${money(cash)}
+
+<br>
+
+房产：
+
+${money(house)}
+
+<br><br>
+
+年度储蓄：
+
+${money(saving)}
+
+<br>
+
+储蓄率：
+
+${rate.toFixed(1)}%
+
+<br><br>
+
+<b>未来资产预测：</b>
+
+<br><br>
+
+5年后：
+
+${money(future5)}
+
+<br>
+
+10年后：
+
+${money(future10)}
+
+<br>
+
+20年后：
+
+${money(future20)}
+
+`;
+
+reportText=
+
+`
+
+🏦 家庭财富 AI Agent 报告
+
+家庭净资产：
+
+${money(total)}
+
+投资资产：
+
+${money(invest)}
+
+现金储备：
+
+${money(cash)}
+
+房产：
+
+${money(house)}
+
+年度储蓄：
+
+${money(saving)}
+
+财富健康评分：
+
+${score}/100
+
+未来预测：
+
+5年：
+
+${money(future5)}
+
+10年：
+
+${money(future10)}
+
+20年：
+
+${money(future20)}
+
+AI建议：
+
+${
+
+stock/total>0.7
+
+?
+
+"股票比例较高，请关注市场波动风险。"
+
+:
+
+"资产配置较均衡。"
+
+}
+
+`;
+
+document.getElementById("report").innerHTML =
+
+reportText;
+  // 复制财富报告
+
+function copyReport(){
+
+navigator.clipboard.writeText(reportText);
+
+alert("财富报告已经复制，可以发送或保存。");
+
+}
+
+// 保存数据到浏览器本地
+
+let saveData={
+
+age,
+
+retire,
+
+target,
+
+income,
+
+expense,
+
+stock,
+
+bond,
+
+cash,
+
+house
+
+};
+
+localStorage.setItem(
+
+"wealthReportV17",
+
+JSON.stringify(saveData)
+
+);
+
+}
+
+// 自动恢复上次数据
+
+window.onload=function(){
+
+let saved =
+
+localStorage.getItem("wealthReportV17");
+
+if(saved){
+
+let d =
+
+JSON.parse(saved);
+
+document.getElementById("age").value =
+
+d.age || "";
+
+document.getElementById("retire").value =
+
+d.retire || "";
+
+document.getElementById("target").value =
+
+d.target || "";
+
+document.getElementById("income").value =
+
+d.income || "";
+
+document.getElementById("expense").value =
+
+d.expense || "";
+
+document.getElementById("stock").value =
+
+d.stock || "";
+
+document.getElementById("bond").value =
+
+d.bond || "";
+
+document.getElementById("cash").value =
+
+d.cash || "";
+
+document.getElementById("house").value =
+
+d.house || "";
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
