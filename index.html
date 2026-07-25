@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>家庭财富 AI Agent</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p class="subtitle">
+
+智能家庭资产管理与财富分析助手 V1.0
+
+</p>
+
+<div class="card">
+
+<h2>📊 财富总览</h2>
+
+<div class="grid">
+
+<div>
+
+<h3>家庭净资产</h3>
+
+<p id="netWorth">¥0</p>
+
+</div>
+
+<div>
+
+<h3>投资资产</h3>
+
+<p id="investment">¥0</p>
+
+</div>
+
+<div>
+
+<h3>现金储备</h3>
+
+<p id="cash">¥0</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>➕ 输入家庭资产</h2>
+
+<label>
+
+股票 / ETF：
+
+</label>
+
+<input id="stock" type="number" placeholder="输入金额">
+
+<label>
+
+债券：
+
+</label>
+
+<input id="bond" type="number" placeholder="输入金额">
+
+<label>
+
+现金：
+
+</label>
+
+<input id="cashInput" type="number" placeholder="输入金额">
+
+<label>
+
+房产：
+
+</label>
+
+<input id="house" type="number" placeholder="输入金额">
+
+<button onclick="analyze()">
+
+开始 AI 分析
+
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 AI 财富分析</h2>
+
+<div id="analysis">
+
+请输入你的家庭资产数据，
+
+AI 将生成财富健康分析。
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📈 风险模拟</h2>
+
+<button onclick="simulate()">
+
+模拟市场下跌30%
+
+</button>
+
+<p id="simulation"></p>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
