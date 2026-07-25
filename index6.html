@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>家庭财富 AI Agent V1.5</title>
+
+<style>
+
+body{
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+
+background:#f5f7fb;
+
+padding:20px;
+
+margin:0;
+
+}
+
+.container{
+
+max-width:720px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+margin-bottom:18px;
+
+border-radius:16px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+input,textarea{
+
+width:100%;
+
+box-sizing:border-box;
+
+padding:12px;
+
+margin:8px 0;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+font-size:16px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+border:0;
+
+border-radius:10px;
+
+background:#2563eb;
+
+color:white;
+
+font-size:17px;
+
+}
+
+.result{
+
+line-height:1.8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p>
+
+家庭私人 CFO 智能财富助手 V1.5
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>👨‍👩‍👧 家庭基本信息</h2>
+
+年龄：
+
+<input id="age" type="number">
+
+退休年龄：
+
+<input id="retire" type="number">
+
+退休目标资产：
+
+<input id="target" type="number">
+
+</div>
+
+<div class="card">
+
+<h2>💰 收入支出</h2>
+
+年收入：
+
+<input id="income" type="number">
+
+年支出：
+
+<input id="expense" type="number">
+
+</div>
+
+<div class="card">
+
+<h2>📊 资产输入</h2>
+
+股票/ETF：
+
+<input id="stock" type="number">
+
+债券：
+
+<input id="bond" type="number">
+
+现金：
+
+<input id="cash" type="number">
+
+房产：
+
+<input id="house" type="number">
+
+<button onclick="analyze()">
+
+生成财富分析
+
+</button>
+
+</div>
+<div class="card">
+
+<h2>🤖 AI 财富顾问</h2>
+
+<textarea id="question"
+
+placeholder="输入你的财富问题，例如：我现在适合退休吗？">
+
+</textarea>
+
+<button onclick="askAI()">
+
+询问 AI 财富顾问
+
+</button>
+
+<div id="answer" class="result">
+
+等待提问
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📊 财富报告</h2>
+
+<div id="report" class="result">
+
+等待分析
+
+</div>
+
+</div>
+
+<script>
+
+function money(x){
+
+return "¥" + Math.round(x).toLocaleString();
+
+}
+
+let wealthData={};
+
+function analyze(){
+
+let age =
+
+Number(document.getElementById("age").value)||0;
+
+let retire =
+
+Number(document.getElementById("retire").value)||65;
+
+let target =
+
+Number(document.getElementById("target").value)||0;
+
+let income =
+
+Number(document.getElementById("income").value)||0;
+
+let expense =
+
+Number(document.getElementById("expense").value)||0;
+
+let stock =
+
+Number(document.getElementById("stock").value)||0;
+
+let bond =
+
+Number(document.getElementById("bond").value)||0;
+
+let cash =
+
+Number(document.getElementById("cash").value)||0;
+
+let house =
+
+Number(document.getElementById("house").value)||0;
+
+let invest =
+
+stock+bond;
+
+let total =
+
+invest+cash+house;
+
+let saving =
+
+income-expense;
+
+let savingRate =
+
+income>0 ? saving/income*100 : 0;
+
+let years =
+
+retire-age;
+
+if(years<0){
+
+years=0;
+
+}
+
+let future =
+
+total*Math.pow(1.05,years);
+
+let score=70;
+
+if(cash/total>0.1)
+
+score+=10;
+
+if(savingRate>20)
+
+score+=10;
+
+if(stock/total<0.7)
+
+score+=10;
+
+if(score>100)
+
+score=100;
+
+wealthData={
+
+age,
+
+retire,
+
+target,
+
+income,
+
+expense,
+
+stock,
+
+bond,
+
+cash,
+
+house,
+
+total,
+
+saving
+
+};
+
+document.getElementById("report").innerHTML=
+
+`
+
+<h3>
+
+🏦 家庭财富健康评分：${score}/100
+
+</h3>
+
+当前家庭净资产：
+
+<b>${money(total)}</b>
+
+<br><br>
+
+投资资产：
+
+${money(invest)}
+
+<br>
+
+现金储备：
+
+${money(cash)}
+
+<br>
+
+年度储蓄：
+
+${money(saving)}
+
+<br><br>
+
+退休预测：
+
+<br>
+
+距离退休：
+
+${years} 年
+
+<br>
+
+预计退休资产：
+
+${money(future)}
+
+<br><br>
+
+AI建议：
+
+<br>
+
+${
+
+cash/total<0.1
+
+?
+
+"建议增加现金安全垫。"
+
+:
+
+"现金流安全性较好。"
+
+}
+
+<br>
+
+${
+
+stock/total>0.7
+
+?
+
+"股票比例较高，需关注市场波动。"
+
+:
+
+"投资风险较均衡。"
+
+}
+
+<br>
+
+${
+
+target>future
+
+?
+
+"距离退休目标资产仍有差距，需要提高储蓄或调整投资策略。"
+
+:
+
+"按照当前假设，退休目标较容易实现。"
+
+}
+
+`;
+
+localStorage.setItem(
+
+"wealthAgentData",
+
+JSON.stringify(wealthData)
+
+);
+
+}
+  // AI 财富顾问回答
+
+function askAI(){
+
+let q =
+
+document.getElementById("question").value;
+
+let d =
+
+wealthData;
+
+if(!d.total){
+
+document.getElementById("answer").innerHTML=
+
+"请先点击“生成财富分析”，让 AI 获取你的家庭财富数据。";
+
+return;
+
+}
+
+let answer="";
+
+if(q.includes("退休")){
+
+answer=
+
+`
+
+根据当前输入：
+
+家庭净资产：
+
+${money(d.total)}
+
+<br>
+
+年度储蓄：
+
+${money(d.saving)}
+
+<br><br>
+
+退休分析：
+
+如果保持目前资产增长速度，
+
+需要重点关注：
+
+<br>
+
+1. 退休后的年度支出水平
+
+<br>
+
+2. 投资组合风险
+
+<br>
+
+3. 医疗和长期护理费用
+
+<br><br>
+
+建议建立：
+
+“安全资产 + 增长资产 + 现金储备”
+
+三层结构。
+
+`;
+
+}
+
+else if(q.includes("股票") || q.includes("风险")){
+
+answer=
+
+`
+
+你的投资资产：
+
+${money(d.stock)}
+
+<br><br>
+
+风险提示：
+
+股票市场短期可能出现较大波动。
+
+建议：
+
+<br>
+
+- 不把全部资产集中在股票
+
+<br>
+
+- 保留应急现金
+
+<br>
+
+- 根据年龄调整风险比例
+
+`;
+
+}
+
+else{
+
+answer=
+
+`
+
+我是你的家庭财富 AI Agent。
+
+根据当前数据：
+
+净资产：
+
+${money(d.total)}
+
+<br><br>
+
+我可以帮助分析：
+
+<br>
+
+✓ 是否达到退休目标
+
+<br>
+
+✓ 资产配置是否合理
+
+<br>
+
+✓ 市场下跌风险
+
+<br>
+
+✓ 财富传承规划
+
+`;
+
+}
+
+document.getElementById("answer").innerHTML =
+
+answer;
+
+}
+
+// 页面打开自动恢复数据
+
+window.onload=function(){
+
+let saved =
+
+localStorage.getItem("wealthAgentData");
+
+if(saved){
+
+let d =
+
+JSON.parse(saved);
+
+document.getElementById("age").value=d.age||"";
+
+document.getElementById("retire").value=d.retire||"";
+
+document.getElementById("target").value=d.target||"";
+
+document.getElementById("income").value=d.income||"";
+
+document.getElementById("expense").value=d.expense||"";
+
+document.getElementById("stock").value=d.stock||"";
+
+document.getElementById("bond").value=d.bond||"";
+
+document.getElementById("cash").value=d.cash||"";
+
+document.getElementById("house").value=d.house||"";
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
