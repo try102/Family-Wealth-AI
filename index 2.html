@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>家庭财富 AI Agent V1.1</title>
+
+<style>
+
+body{
+
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;
+
+    background:#f5f7fb;
+
+    margin:0;
+
+    padding:20px;
+
+    color:#222;
+
+}
+
+.container{
+
+    max-width:600px;
+
+    margin:auto;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:20px;
+
+    margin-bottom:18px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+
+}
+
+h1{
+
+    text-align:center;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:12px;
+
+    margin:8px 0;
+
+    border-radius:8px;
+
+    border:1px solid #ccc;
+
+    font-size:16px;
+
+}
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:17px;
+
+    margin-top:10px;
+
+}
+
+.result{
+
+    font-size:18px;
+
+    line-height:1.8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🏦 家庭财富 AI Agent</h1>
+
+<p style="text-align:center">
+
+智能家庭资产管理与财富分析助手 V1.1
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>📊 财富总览</h2>
+
+<div class="result">
+
+家庭净资产：
+
+<b id="total">¥0</b>
+
+<br>
+
+投资资产：
+
+<b id="invest">¥0</b>
+
+<br>
+
+现金储备：
+
+<b id="cashShow">¥0</b>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>➕ 输入家庭资产</h2>
+
+股票 / ETF：
+
+<input id="stock" type="number" placeholder="输入金额">
+
+债券：
+
+<input id="bond" type="number" placeholder="输入金额">
+
+现金：
+
+<input id="cash" type="number" placeholder="输入金额">
+
+房产：
+
+<input id="house" type="number" placeholder="输入金额">
+
+<button onclick="analyze()">
+
+开始 AI 分析
+
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 AI 财富分析</h2>
+
+<div class="result" id="report">
+
+请输入家庭资产数据，AI 将生成财富健康分析。
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📈 风险模拟</h2>
+
+<div class="result" id="risk">
+
+请输入资产后查看市场下跌影响。
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function money(x){
+
+return "¥" + x.toLocaleString();
+
+}
+
+function analyze(){
+
+let stock =
+
+Number(document.getElementById("stock").value)||0;
+
+let bond =
+
+Number(document.getElementById("bond").value)||0;
+
+let cash =
+
+Number(document.getElementById("cash").value)||0;
+
+let house =
+
+Number(document.getElementById("house").value)||0;
+
+let invest = stock + bond;
+
+let total = invest + cash + house;
+
+document.getElementById("total").innerHTML =
+
+money(total);
+
+document.getElementById("invest").innerHTML =
+
+money(invest);
+
+document.getElementById("cashShow").innerHTML =
+
+money(cash);
+
+let score=70;
+
+if(cash/total>0.1){
+
+score+=10;
+
+}
+
+if(invest/total<0.7){
+
+score+=10;
+
+}
+
+document.getElementById("report").innerHTML=
+
+`
+
+财富健康评分：
+
+<b>${score}/100</b>
+
+<br><br>
+
+资产结构：
+
+<br>
+
+股票/ETF：
+
+${money(stock)}
+
+<br>
+
+债券：
+
+${money(bond)}
+
+<br>
+
+现金：
+
+${money(cash)}
+
+<br>
+
+房产：
+
+${money(house)}
+
+<br><br>
+
+建议：
+
+<br>
+
+${
+
+invest/total>0.8
+
+?
+
+"投资资产比例较高，需要关注市场波动风险。"
+
+:
+
+"资产配置相对均衡。"
+
+}
+
+<br>
+
+${
+
+cash/total<0.1
+
+?
+
+"现金储备偏低，建议保持应急资金。"
+
+:
+
+"现金流安全性较好。"
+
+}
+
+`;
+
+let loss10 = invest*0.1;
+
+let loss20 = invest*0.2;
+
+let loss30 = invest*0.3;
+
+document.getElementById("risk").innerHTML=
+
+`
+
+如果投资市场：
+
+<br>
+
+下跌10%：
+
+可能减少 ${money(loss10)}
+
+<br>
+
+下跌20%：
+
+可能减少 ${money(loss20)}
+
+<br>
+
+下跌30%：
+
+可能减少 ${money(loss30)}
+
+<br><br>
+
+建议：
+
+根据风险承受能力调整股票比例。
+
+`;
+
+}
+
+</script>
+
+</body>
+
+</html>
